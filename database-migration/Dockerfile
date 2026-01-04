@@ -1,5 +1,5 @@
-FROM panther.centraldg6.athens.intrasoft-intl.private:32443/ermis-tn-external-libs/oracle-db:12.2.0.1-slim
+FROM postgres:16-alpine
 
-WORKDIR /home/oracle/setup/custom_scripts
-
-COPY src/main/resources/liquibase/com.poc.chat.application/configDBora.sh /home/oracle/setup/
+#WORKDIR /docker-entrypoint-initdb.d
+#
+#COPY src/main/resources/liquibase/com.poc.chat.application/configDB.sh /docker-entrypoint-initdb.d/

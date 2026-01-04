@@ -1,0 +1,18 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: chat-app-db
+    environment:
+      POSTGRES_DB: chat-app-db
+      POSTGRES_USER: chat-app-user
+      POSTGRES_PASSWORD: chat-app-password
+    ports:
+      - "5432:5432"
+      # mounting volume from our PC (./src/main/resources/db/migrations/scripts) to directory inside the container (/docker-entrypoint-initdb.d),
+      # which we crated in Dockerfile
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+#      - ./database-migration/src/main/resources/liquibase/com.poc.chat.application/scripts:/docker-entrypoint-initdb.d
+
+volumes:
+  postgres_data:
