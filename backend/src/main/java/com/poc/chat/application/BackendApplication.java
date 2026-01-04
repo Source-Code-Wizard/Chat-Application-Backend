@@ -1,13 +1,13 @@
-package com.poc.chat.application.backend;
+package com.poc.chat.application;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class ChatApplicationBackendApplication {
+public class BackendApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(ChatApplicationBackendApplication.class, args);
+        SpringApplication.run(BackendApplication.class, args);
     }
 
 }
