@@ -1,0 +1,54 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+
+    <changeSet dbms="postgresql" author="chat-application-db" id="chat-application-db-rollback-tag-1.0.0.3">
+        <tagDatabase tag="chat-application-db-rollback-tag-1.0.0.3"/>
+    </changeSet>
+
+    <changeSet dbms="postgresql" author="chat-application-db" id="1.0.0.3-1">
+
+        <preConditions>
+            <not>
+                <tableExists tableName="CHAT_USER"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="CHAT_USER">
+
+            <column name="USER_ID" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="CHAT_ID" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="ROLE" type="VARCHAR(20)" defaultValue="MEMBER">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="JOINED_AT" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="MUTED_UNTIL" type="TIMESTAMP"/>
+
+        </createTable>
+        <rollback>
+            <dropTable tableName="CHAT_USER"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet dbms="postgresql" author="chat-application-db" id="1.0.0.3-2">
+        <addPrimaryKey tableName="CHAT_USER" columnNames="CHAT_ID, USER_ID" constraintName="chat_user_pk"/>
+        <rollback>
+            <dropPrimaryKey tableName="CHAT_USER" constraintName="chat_user_pk"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>
