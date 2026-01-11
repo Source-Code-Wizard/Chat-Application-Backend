@@ -2,27 +2,40 @@ package com.poc.chat.application.domain.entity;
 
 
 import com.poc.chat.application.util.enums.UserStatus;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.NaturalId;
+import org.hibernate.annotations.NaturalIdCache;
 import org.hibernate.annotations.UuidGenerator;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
 @Builder
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "USER")
+@NaturalIdCache // This caches lookups by the natural ID (the name field marked with @NaturalId).
+// This enables second-level caching for the user entity.
+// Instead of hitting the database every time you load a User, Hibernate can retrieve it from an in-memory cache.
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class UserEntity {
 
     @Id
@@ -30,6 +43,7 @@ public class UserEntity {
     @Column(name = "ID", nullable = false, updatable = false)
     private UUID id;
 
+    @NaturalId
     @Column(name = "USERNAME", nullable = false, unique = true, length = 50)
     private String username;
 
@@ -54,6 +68,12 @@ public class UserEntity {
 
     @Column(name = "UPDATED_AT", nullable = false)
     private LocalDateTime updatedAt;
+
+    @OneToMany(mappedBy = "userEntity", cascade = CascadeType.ALL, orphanRemoval = true)
+    List<ChatUserEntity> chatUserEntities;
+
+    @OneToMany(mappedBy = "receiverEntity", cascade = CascadeType.ALL, orphanRemoval = true)
+    List<FriendRequestEntity> friendRequests;
 
     @PrePersist
     protected void onCreate() {
