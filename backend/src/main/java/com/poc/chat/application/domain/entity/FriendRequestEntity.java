@@ -15,11 +15,13 @@ import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Builder
+@Getter
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
@@ -51,10 +53,16 @@ public class FriendRequestEntity {
     @Column(name = "RESPONDED_AT")
     private LocalDateTime respondedAt;
 
+    public FriendRequestEntity(final UserEntity sender, final UserEntity receiver) {
+        this.senderEntity = sender;
+        this.receiverEntity = receiver;
+    }
+
     @PrePersist
     private void onCreate() {
         createdAt = LocalDateTime.now();
         updatedAt = LocalDateTime.now();
+        status = FriendRequestStatus.PENDING;
     }
 
     @PreUpdate
