@@ -9,11 +9,15 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapsId;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "CHAT_USER")
 public class ChatUserEntity {
 
@@ -36,6 +40,12 @@ public class ChatUserEntity {
 
     @Column(name = "MUTED_UNTIL", nullable = false, updatable = false)
     private LocalDateTime mutedUntil;
+
+    public ChatUserEntity(final ChatEntity chatEntity, final UserEntity userEntity, final UserRole userRole) {
+        this.chatEntity = chatEntity;
+        this.userEntity = userEntity;
+        this.userRole = userRole;
+    }
 
     @Override
     public boolean equals(Object o) {
