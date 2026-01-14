@@ -1,11 +1,14 @@
 package com.poc.chat.application.domain.entity;
 
 import com.poc.chat.application.util.enums.ChatType;
+import com.poc.chat.application.util.enums.UserRole;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
@@ -15,6 +18,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.UuidGenerator;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Builder
@@ -49,6 +53,9 @@ public class ChatEntity {
     @Column(name = "UPDATED_AT", nullable = false)
     private LocalDateTime updatedAt;
 
+    @OneToMany(mappedBy = "chatEntity", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ChatUserEntity> chatUserEntities;
+
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
@@ -59,5 +66,11 @@ public class ChatEntity {
     @PreUpdate
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
+    }
+
+    public void addUser(final UserEntity userEntity, final UserRole userRole) {
+        final ChatUserEntity newChatUserEntity = new ChatUserEntity(this, userEntity, userRole);
+        chatUserEntities.add(newChatUserEntity);
+        userEntity.getChatUserEntities().add(newChatUserEntity);
     }
 }
