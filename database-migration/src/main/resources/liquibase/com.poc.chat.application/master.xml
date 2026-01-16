@@ -8,4 +8,6 @@
     <include relativeToChangelogFile="true" file="changelogs/1.0.0.1-create-user-table.xml"/>
     <include relativeToChangelogFile="true" file="changelogs/1.0.0.2-create-chat-table.xml"/>
     <include relativeToChangelogFile="true" file="changelogs/1.0.0.3-create-chat-user-table.xml"/>
+    <include relativeToChangelogFile="true" file="changelogs/1.0.0.4-populate-user-table.xml"/>
+    <include relativeToChangelogFile="true" file="changelogs/1.0.0.5-create-friend-request-table.xml"/>
 </databaseChangeLog>

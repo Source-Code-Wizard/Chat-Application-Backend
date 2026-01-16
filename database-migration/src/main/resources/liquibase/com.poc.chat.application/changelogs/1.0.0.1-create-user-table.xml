@@ -14,11 +14,11 @@
 
         <preConditions>
             <not>
-                <tableExists tableName="USER"/>
+                <tableExists tableName="USERS"/>
             </not>
         </preConditions>
 
-        <createTable tableName="USER">
+        <createTable tableName="USERS">
 
             <column name="ID" type="UUID">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="users_pk"/>
@@ -52,7 +52,7 @@
 
         </createTable>
         <rollback>
-            <dropTable tableName="USER"/>
+            <dropTable tableName="USERS"/>
         </rollback>
     </changeSet>
 

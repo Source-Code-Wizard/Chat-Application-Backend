@@ -1,0 +1,84 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+
+    <changeSet dbms="postgresql" author="chat-application-db" id="chat-application-db-rollback-tag-1.0.0.4">
+        <tagDatabase tag="chat-application-db-rollback-tag-1.0.0.4"/>
+    </changeSet>
+
+    <changeSet dbms="postgresql" author="chat-application-db" id="1.0.0.4-1">
+
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="USERS"/>
+            <sqlCheck expectedResult="0">SELECT COUNT(*) FROM "users"</sqlCheck>
+        </preConditions>
+
+        <insert tableName="USERS">
+            <column name="ID" value="550e8400-e29b-41d4-a716-446655440001"/>
+            <column name="USERNAME" value="john_doe"/>
+            <column name="EMAIL" value="john.doe@example.com"/>
+            <column name="PASSWORD" value="$2a$10$N9qo8uLOickgx2ZMRZoMy.MqrqvnrshpH/nKpHSbU9busVDPKTKAu"/>
+            <column name="AVATAR_URL" value="https://i.pravatar.cc/150?u=john"/>
+            <column name="STATUS" value="ONLINE"/>
+            <column name="LAST_SEEN_AT" valueComputed="CURRENT_TIMESTAMP"/>
+        </insert>
+
+        <insert tableName="USERS">
+            <column name="ID" value="550e8400-e29b-41d4-a716-446655440002"/>
+            <column name="USERNAME" value="jane_smith"/>
+            <column name="EMAIL" value="jane.smith@example.com"/>
+            <column name="PASSWORD" value="$2a$10$N9qo8uLOickgx2ZMRZoMy.MqrqvnrshpH/nKpHSbU9busVDPKTKAu"/>
+            <column name="AVATAR_URL" value="https://i.pravatar.cc/150?u=jane"/>
+            <column name="STATUS" value="OFFLINE"/>
+            <column name="LAST_SEEN_AT" valueComputed="CURRENT_TIMESTAMP - INTERVAL '2 hours'"/>
+        </insert>
+
+        <insert tableName="USERS">
+            <column name="ID" value="550e8400-e29b-41d4-a716-446655440003"/>
+            <column name="USERNAME" value="mike_wilson"/>
+            <column name="EMAIL" value="mike.wilson@example.com"/>
+            <column name="PASSWORD" value="$2a$10$N9qo8uLOickgx2ZMRZoMy.MqrqvnrshpH/nKpHSbU9busVDPKTKAu"/>
+            <column name="AVATAR_URL" value="https://i.pravatar.cc/150?u=mike"/>
+            <column name="STATUS" value="AWAY"/>
+            <column name="LAST_SEEN_AT" valueComputed="CURRENT_TIMESTAMP - INTERVAL '30 minutes'"/>
+        </insert>
+
+        <insert tableName="USERS">
+            <column name="ID" value="550e8400-e29b-41d4-a716-446655440004"/>
+            <column name="USERNAME" value="sarah_connor"/>
+            <column name="EMAIL" value="sarah.connor@example.com"/>
+            <column name="PASSWORD" value="$2a$10$N9qo8uLOickgx2ZMRZoMy.MqrqvnrshpH/nKpHSbU9busVDPKTKAu"/>
+            <column name="AVATAR_URL" value="https://i.pravatar.cc/150?u=sarah"/>
+            <column name="STATUS" value="ONLINE"/>
+            <column name="LAST_SEEN_AT" valueComputed="CURRENT_TIMESTAMP"/>
+        </insert>
+
+        <insert tableName="USERS">
+            <column name="ID" value="550e8400-e29b-41d4-a716-446655440005"/>
+            <column name="USERNAME" value="alex_tech"/>
+            <column name="EMAIL" value="alex.tech@example.com"/>
+            <column name="PASSWORD" value="$2a$10$N9qo8uLOickgx2ZMRZoMy.MqrqvnrshpH/nKpHSbU9busVDPKTKAu"/>
+            <column name="AVATAR_URL" value="https://i.pravatar.cc/150?u=alex"/>
+            <column name="STATUS" value="OFFLINE"/>
+            <column name="LAST_SEEN_AT" valueComputed="CURRENT_TIMESTAMP - INTERVAL '1 day'"/>
+        </insert>
+
+        <rollback>
+            <delete tableName="USERS">
+                <where>ID IN (
+                    '550e8400-e29b-41d4-a716-446655440001',
+                    '550e8400-e29b-41d4-a716-446655440002',
+                    '550e8400-e29b-41d4-a716-446655440003',
+                    '550e8400-e29b-41d4-a716-446655440004',
+                    '550e8400-e29b-41d4-a716-446655440005'
+                    )</where>
+            </delete>
+        </rollback>
+
+    </changeSet>
+
+</databaseChangeLog>

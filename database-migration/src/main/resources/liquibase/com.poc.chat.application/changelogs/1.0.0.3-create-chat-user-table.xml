@@ -49,6 +49,25 @@
         <rollback>
             <dropPrimaryKey tableName="CHAT_USER" constraintName="chat_user_pk"/>
         </rollback>
+
+
+        <!-- Foreign Key to Users  -->
+        <addForeignKeyConstraint
+                baseTableName="chat_user"
+                baseColumnNames="user_id"
+                referencedTableName="users"
+                referencedColumnNames="id"
+                constraintName="fk_chat_user_user"
+                onDelete="CASCADE"/>
+
+        <!-- Foreign Key to Chat -->
+        <addForeignKeyConstraint
+                baseTableName="chat_user"
+                baseColumnNames="chat_id"
+                referencedTableName="chat"
+                referencedColumnNames="id"
+                constraintName="fk_chat_user_chat"
+                onDelete="CASCADE"/>
     </changeSet>
 
 </databaseChangeLog>

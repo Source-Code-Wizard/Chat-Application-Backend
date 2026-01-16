@@ -1,0 +1,74 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
+
+    <changeSet dbms="postgresql" author="chat-application-db" id="chat-application-db-rollback-tag-1.0.0.5">
+        <tagDatabase tag="chat-application-db-rollback-tag-1.0.0.5"/>
+    </changeSet>
+
+    <changeSet dbms="postgresql" author="chat-application-db" id="1.0.0.5-1">
+
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="friend_request"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="friend_request">
+            <column name="sender_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="receiver_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="VARCHAR(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="responded_at" type="TIMESTAMP"/>
+        </createTable>
+
+        <!-- Primary Key -->
+        <addPrimaryKey
+                tableName="friend_request"
+                columnNames="sender_id, receiver_id"
+                constraintName="friend_request_pk"/>
+
+        <!-- Foreign Key to Users (sender) -->
+        <addForeignKeyConstraint
+                baseTableName="friend_request"
+                baseColumnNames="sender_id"
+                referencedTableName="users"
+                referencedColumnNames="id"
+                constraintName="fk_friend_request_sender"
+                onDelete="CASCADE"/>
+
+        <!-- Foreign Key to Users (receiver) -->
+        <addForeignKeyConstraint
+                baseTableName="friend_request"
+                baseColumnNames="receiver_id"
+                referencedTableName="users"
+                referencedColumnNames="id"
+                constraintName="fk_friend_request_receiver"
+                onDelete="CASCADE"/>
+
+<!--        &lt;!&ndash; Prevent self-requests &ndash;&gt;-->
+<!--        <sql>-->
+<!--            ALTER TABLE friend_request ADD CONSTRAINT chk_no_self_request CHECK (sender_id != receiver_id);-->
+<!--        </sql>-->
+
+        <rollback>
+            <dropTable tableName="friend_request"/>
+        </rollback>
+
+    </changeSet>
+
+</databaseChangeLog>
