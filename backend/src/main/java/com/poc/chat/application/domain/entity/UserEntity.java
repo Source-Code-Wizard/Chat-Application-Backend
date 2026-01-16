@@ -31,7 +31,7 @@ import java.util.UUID;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "USER")
+@Table(name = "USERS")
 @NaturalIdCache // This caches lookups by the natural ID (the name field marked with @NaturalId).
 // This enables second-level caching for the user entity.
 // Instead of hitting the database every time you load a User, Hibernate can retrieve it from an in-memory cache.
@@ -40,7 +40,7 @@ public class UserEntity {
 
     @Id
     @UuidGenerator
-    @Column(name = "ID", nullable = false, updatable = false)
+    @Column(name = "id", nullable = false, updatable = false)
     private UUID id;
 
     @NaturalId

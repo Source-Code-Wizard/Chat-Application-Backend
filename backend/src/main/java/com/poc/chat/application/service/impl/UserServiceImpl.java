@@ -5,6 +5,7 @@ import com.poc.chat.application.domain.dto.FriendRequestResponseDto;
 import com.poc.chat.application.domain.dto.FriendRequestUpdateDto;
 import com.poc.chat.application.domain.dto.UserRequestDto;
 import com.poc.chat.application.domain.dto.UserResponseDto;
+import com.poc.chat.application.domain.entity.ChatEntity;
 import com.poc.chat.application.domain.entity.FriendRequestEntity;
 import com.poc.chat.application.domain.entity.FriendRequestId;
 import com.poc.chat.application.domain.entity.UserEntity;
@@ -14,6 +15,7 @@ import com.poc.chat.application.repository.FriendRequestRepository;
 import com.poc.chat.application.repository.UserRepository;
 import com.poc.chat.application.service.UserService;
 import com.poc.chat.application.util.enums.FriendRequestStatus;
+import com.poc.chat.application.util.enums.UserRole;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -51,17 +53,17 @@ public class UserServiceImpl implements UserService {
 
         friendRequestRepository.save(new FriendRequestEntity(sender, receiver));
 
-        return new FriendRequestResponseDto(UUID.fromString(receiverId), friendRequestDto.senderId(), FriendRequestStatus.ACCEPTED);
+        return new FriendRequestResponseDto(UUID.fromString(receiverId), friendRequestDto.senderId(), FriendRequestStatus.PENDING);
     }
 
     @Override
     @Transactional
     public FriendRequestResponseDto updateFriendRequestStatus(final String receiverId, final FriendRequestUpdateDto friendRequestUpdateDto) {
 
-        userRepository.findById(UUID.fromString(receiverId))
+        final UserEntity receiver = userRepository.findById(UUID.fromString(receiverId))
                 .orElseThrow(() -> new RuntimeException(String.format("Requester with id : %s of friend request was not found.", UUID.fromString(receiverId))));
 
-        userRepository.findById(friendRequestUpdateDto.senderId())
+        final UserEntity sender = userRepository.findById(friendRequestUpdateDto.senderId())
                 .orElseThrow(() -> new RuntimeException(String.format("friend with id : %s of friend request was not found.", friendRequestUpdateDto.senderId())));
 
         final FriendRequestEntity friendRequestEntity = friendRequestRepository.findById(new FriendRequestId(friendRequestUpdateDto.senderId(), UUID.fromString(receiverId)))
@@ -70,6 +72,13 @@ public class UserServiceImpl implements UserService {
         friendRequestEntity.updateStatus(friendRequestUpdateDto.status());
 
         friendRequestRepository.save(friendRequestEntity);
+
+        if (friendRequestUpdateDto.status().equals(FriendRequestStatus.ACCEPTED)) {
+            ChatEntity newPrivateChat = new ChatEntity();
+            newPrivateChat.addUser(receiver, UserRole.USER);
+            newPrivateChat.addUser(sender, UserRole.USER);
+            chatRepository.save(newPrivateChat);
+        }
 
         return new FriendRequestResponseDto(UUID.fromString(receiverId), friendRequestUpdateDto.senderId(), friendRequestUpdateDto.status());
     }

@@ -14,14 +14,17 @@ import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.UuidGenerator;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 @Builder
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -54,7 +57,7 @@ public class ChatEntity {
     private LocalDateTime updatedAt;
 
     @OneToMany(mappedBy = "chatEntity", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ChatUserEntity> chatUserEntities;
+    private List<ChatUserEntity> chatUserEntities = new ArrayList<>();
 
     @PrePersist
     protected void onCreate() {

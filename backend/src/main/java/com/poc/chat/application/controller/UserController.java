@@ -2,6 +2,7 @@ package com.poc.chat.application.controller;
 
 import com.poc.chat.application.domain.dto.FriendRequestDto;
 import com.poc.chat.application.domain.dto.FriendRequestResponseDto;
+import com.poc.chat.application.domain.dto.FriendRequestUpdateDto;
 import com.poc.chat.application.domain.dto.UserRequestDto;
 import com.poc.chat.application.domain.dto.UserResponseDto;
 import com.poc.chat.application.service.UserService;
@@ -39,8 +40,8 @@ public class UserController {
     }
 
     @PatchMapping("/{receiverId}/friend-requests")
-    ResponseEntity<FriendRequestResponseDto> updateFriendRequestStatus(@PathVariable("receiverId") final String receiverId, @RequestBody final FriendRequestDto friendRequestDto) {
+    ResponseEntity<FriendRequestResponseDto> updateFriendRequestStatus(@PathVariable("receiverId") final String receiverId, @RequestBody final FriendRequestUpdateDto friendRequestUpdateDto) {
         return ResponseEntity
-                .ok(userService.saveFriendRequest(receiverId, friendRequestDto));
+                .ok(userService.updateFriendRequestStatus(receiverId, friendRequestUpdateDto));
     }
 }

@@ -8,6 +8,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapsId;
 import jakarta.persistence.PrePersist;
@@ -19,6 +20,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Builder
 @Getter
@@ -29,14 +31,18 @@ import java.time.LocalDateTime;
 public class FriendRequestEntity {
 
     @EmbeddedId
-    @Column(name = "ID", nullable = false, updatable = false)
     private FriendRequestId friendRequestId;
 
     @MapsId("senderId")
+    // By default , spring boot will name this column like this : sender_entity_id
+    // based on the private member variable : senderEntity
+    // this is the reason we use  @JoinColumn(name = "sender_id")
+    @JoinColumn(name = "sender_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private UserEntity senderEntity;
 
     @MapsId("receiverId")
+    @JoinColumn(name = "receiver_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private UserEntity receiverEntity;
 
@@ -54,6 +60,7 @@ public class FriendRequestEntity {
     private LocalDateTime respondedAt;
 
     public FriendRequestEntity(final UserEntity sender, final UserEntity receiver) {
+        this.friendRequestId = new FriendRequestId(sender.getId(), receiver.getId());
         this.senderEntity = sender;
         this.receiverEntity = receiver;
     }

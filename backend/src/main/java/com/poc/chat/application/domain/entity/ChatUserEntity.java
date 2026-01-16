@@ -6,8 +6,10 @@ import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapsId;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -25,10 +27,12 @@ public class ChatUserEntity {
     private ChatUserEntityId id;
 
     @MapsId("userId")
+    @JoinColumn(name = "user_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private UserEntity userEntity;
 
     @MapsId("chatId")
+    @JoinColumn(name = "chat_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private ChatEntity chatEntity;
 
@@ -38,10 +42,11 @@ public class ChatUserEntity {
     @Column(name = "JOINED_AT", nullable = false, updatable = false)
     private LocalDateTime joinedAt;
 
-    @Column(name = "MUTED_UNTIL", nullable = false, updatable = false)
+    @Column(name = "MUTED_UNTIL")
     private LocalDateTime mutedUntil;
 
     public ChatUserEntity(final ChatEntity chatEntity, final UserEntity userEntity, final UserRole userRole) {
+        this.id = new ChatUserEntityId(userEntity.getId(), chatEntity.getId());
         this.chatEntity = chatEntity;
         this.userEntity = userEntity;
         this.userRole = userRole;
@@ -61,6 +66,11 @@ public class ChatUserEntity {
     @Override
     public int hashCode() {
         return Objects.hash(userEntity, chatEntity);
+    }
+
+    @PrePersist
+    private void onCreate() {
+        joinedAt = LocalDateTime.now();
     }
 
 }
