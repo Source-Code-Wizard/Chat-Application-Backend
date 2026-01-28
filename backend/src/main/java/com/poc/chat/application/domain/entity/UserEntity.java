@@ -23,7 +23,9 @@ import org.hibernate.annotations.NaturalIdCache;
 import org.hibernate.annotations.UuidGenerator;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Entity
@@ -75,6 +77,9 @@ public class UserEntity {
     @OneToMany(mappedBy = "receiverEntity", cascade = CascadeType.ALL, orphanRemoval = true)
     List<FriendRequestEntity> friendRequests;
 
+    @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MessageEntity> messageEntities = new ArrayList<>();
+
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
@@ -84,5 +89,23 @@ public class UserEntity {
     @PreUpdate
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
+    }
+
+    public void addMessage(final MessageEntity messageEntity) {
+
+        if (Objects.isNull(messageEntity))
+            return;
+
+        messageEntity.setSender(this);
+        messageEntities.add(messageEntity);
+    }
+
+    public void removeMessage(final MessageEntity messageEntity) {
+
+        if (Objects.isNull(messageEntity))
+            return;
+
+        messageEntity.setChatEntity(null);
+        messageEntities.remove(messageEntity);
     }
 }

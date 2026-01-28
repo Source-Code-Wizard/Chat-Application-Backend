@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap"
+          rel="stylesheet">
+    <link rel="stylesheet" href="css/main.css">
+    <title>Chat Application</title>
+</head>
+<body>
+<!-- Login Page -->
+<div class="login-page" id="login-page">
+    <div class="login-container">
+        <div class="login-header">
+            <div class="logo">
+                <span class="logo-icon">💬</span>
+                <span class="logo-text">ChatApp</span>
+            </div>
+            <p class="login-subtitle">Connect and chat in real-time</p>
+        </div>
+        <form id="loginForm" class="login-form">
+            <div class="form-group">
+                <label for="userId">User ID (UUID)</label>
+                <input type="text" id="userId" name="userId" placeholder="Enter your user ID" required>
+            </div>
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" placeholder="Enter your username" required>
+            </div>
+            <button type="submit" class="btn-primary">
+                <span>Enter Chat</span>
+                <span class="btn-arrow">→</span>
+            </button>
+        </form>
+        <div class="demo-users">
+            <p>Demo Users (click to autofill):</p>
+            <div class="demo-user-buttons">
+                <button type="button" class="demo-btn" data-userid="550e8400-e29b-41d4-a716-446655440001"
+                        data-username="john_doe">John Doe
+                </button>
+                <button type="button" class="demo-btn" data-userid="550e8400-e29b-41d4-a716-446655440002"
+                        data-username="jane_smith">Jane Smith
+                </button>
+                <button type="button" class="demo-btn" data-userid="550e8400-e29b-41d4-a716-446655440003"
+                        data-username="mike_wilson">Mike Wilson
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Chat Page -->
+<div class="chat-page hidden" id="chat-page">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo-small">
+                <span class="logo-icon">💬</span>
+                <span>ChatApp</span>
+            </div>
+        </div>
+
+        <!-- User Info -->
+        <div class="user-info">
+            <div class="user-avatar" id="currentUserAvatar">
+                <span>U</span>
+            </div>
+            <div class="user-details">
+                <span class="user-name" id="currentUserName">Username</span>
+                <span class="user-status online">● Online</span>
+            </div>
+        </div>
+
+        <!-- Chat List -->
+        <div class="chat-section">
+            <div class="section-header">
+                <h3>Chats</h3>
+                <button class="btn-icon" id="newChatBtn" title="New Chat">+</button>
+            </div>
+            <ul class="chat-list" id="chatList">
+                <!-- Chat items will be populated here -->
+            </ul>
+        </div>
+
+        <!-- Online Users -->
+        <div class="users-section">
+            <div class="section-header">
+                <h3>Online Users</h3>
+            </div>
+            <ul class="users-list" id="usersList">
+                <!-- Online users will be populated here -->
+            </ul>
+        </div>
+
+        <!-- Logout -->
+        <div class="sidebar-footer">
+            <button class="btn-logout" id="logoutBtn">
+                <span>Logout</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Chat Area -->
+    <main class="chat-main">
+        <!-- No Chat Selected State -->
+        <div class="no-chat-selected" id="noChatSelected">
+            <div class="no-chat-content">
+                <span class="no-chat-icon">💬</span>
+                <h2>Welcome to ChatApp</h2>
+                <p>Select a chat from the sidebar or start a new conversation</p>
+            </div>
+        </div>
+
+        <!-- Chat Area (hidden by default) -->
+        <div class="chat-area hidden" id="chatArea">
+            <!-- Chat Header -->
+            <div class="chat-header">
+                <div class="chat-header-info">
+                    <div class="chat-avatar" id="chatAvatar">
+                        <span>C</span>
+                    </div>
+                    <div class="chat-details">
+                        <h3 id="chatName">Chat Name</h3>
+                        <span class="chat-status" id="chatStatus">2 participants</span>
+                    </div>
+                </div>
+                <div class="chat-header-actions">
+                    <button class="btn-icon" title="Chat Info">ℹ️</button>
+                </div>
+            </div>
+
+            <!-- Messages Container -->
+            <div class="messages-container" id="messagesContainer">
+                <!-- Messages will be populated here -->
+            </div>
+
+            <!-- Message Input -->
+            <form class="message-form" id="messageForm">
+                <div class="message-input-container">
+                    <input type="text" id="messageInput" placeholder="Type a message..." autocomplete="off">
+                    <button type="submit" class="btn-send" id="sendBtn">
+                        <span>Send</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </main>
+</div>
+
+<!-- New Chat Modal -->
+<div class="modal hidden" id="newChatModal">
+    <div class="modal-overlay"></div>
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Start New Chat</h3>
+            <button class="btn-close" id="closeModalBtn">×</button>
+        </div>
+        <form id="newChatForm" class="modal-form">
+            <div class="form-group">
+                <label for="chatIdInput">Chat ID (UUID)</label>
+                <input type="text" id="chatIdInput" placeholder="Enter chat ID or generate new" required>
+                <button type="button" class="btn-secondary" id="generateChatIdBtn">Generate</button>
+            </div>
+            <div class="form-group">
+                <label for="chatNameInput">Chat Name</label>
+                <input type="text" id="chatNameInput" placeholder="Enter chat name" required>
+            </div>
+            <button type="submit" class="btn-primary">Create Chat</button>
+        </form>
+    </div>
+</div>
+
+<!-- Connection Status -->
+<div class="connection-status" id="connectionStatus">
+    <span class="status-indicator"></span>
+    <span class="status-text">Connecting...</span>
+</div>
+
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+<script src="js/main.js?v=2"></script>
+</body>
+</html>

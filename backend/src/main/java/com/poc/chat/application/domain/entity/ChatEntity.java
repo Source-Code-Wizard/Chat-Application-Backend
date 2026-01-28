@@ -21,6 +21,7 @@ import org.hibernate.annotations.UuidGenerator;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Builder
@@ -59,6 +60,9 @@ public class ChatEntity {
     @OneToMany(mappedBy = "chatEntity", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ChatUserEntity> chatUserEntities = new ArrayList<>();
 
+    @OneToMany(mappedBy = "chatEntity", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MessageEntity> messageEntities = new ArrayList<>();
+
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
@@ -75,5 +79,23 @@ public class ChatEntity {
         final ChatUserEntity newChatUserEntity = new ChatUserEntity(this, userEntity, userRole);
         chatUserEntities.add(newChatUserEntity);
         userEntity.getChatUserEntities().add(newChatUserEntity);
+    }
+
+    public void addMessage(final MessageEntity messageEntity) {
+
+        if (Objects.isNull(messageEntity))
+            return;
+
+        messageEntity.setChatEntity(this);
+        messageEntities.add(messageEntity);
+    }
+
+    public void removeMessage(final MessageEntity messageEntity) {
+
+        if (Objects.isNull(messageEntity))
+            return;
+
+        messageEntity.setChatEntity(null);
+        messageEntities.remove(messageEntity);
     }
 }
